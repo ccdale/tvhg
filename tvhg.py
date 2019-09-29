@@ -106,6 +106,7 @@ def main():
     lsize = 80
     ncols = 4
     nchans = len(sents)
+    print(str(nchans) + " channels active")
     nrows = int(nchans / ncols)
     if nchans % ncols > 0:
         nrows += 1
