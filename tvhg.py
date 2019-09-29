@@ -69,16 +69,20 @@ class ChannelButton(Gtk.Button):
         super().__init__()
         logopath = os.path.dirname(__file__) + "/channellogos"
         filename = logopath + "/" + channame + ".png"
-        print(filename)
-        self.img = ChannelImage(filename, height, width)
-        self.img.redraw()
-        self.set_image(self.img)
-        # self.set_always_show_image(True)
+        if not UT.fileExists(filename):
+            print("logo not found {}".format(filename))
+            self.img = None
+        else:
+            self.img = ChannelImage(filename, height, width)
+            self.img.redraw()
+            self.set_image(self.img)
+            # self.set_always_show_image(True)
 
     def redraw(self, width=-1, height=-1):
-        self.img.redraw(width, height)
-        # self.set_width(self.img.cw)
-        # self.set_height(self.img.ch)
+        if self.img is not None:
+            self.img.redraw(width, height)
+            # self.set_width(self.img.cw)
+            # self.set_height(self.img.ch)
 
 
 class MainWindow(Gtk.Window):
