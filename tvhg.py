@@ -64,7 +64,7 @@ class ChannelButton(Gtk.Button):
         self.img = ChannelImage(filename, height, width)
         self.img.redraw()
         self.set_image(self.img)
-        self.set_always_show_image(True)
+        # self.set_always_show_image(True)
 
     def redraw(self, width=-1, height=-1):
         self.img.redraw(width, height)
@@ -86,6 +86,7 @@ def main():
     win.connect("delete-event", Gtk.main_quit)
     win.setTitle("TV Guide")
     bbc4 = ChannelButton("/home/chris/src/tvhg/channellogos/BBC Four HD.png")
+    bbc4.set_label("BBC Four HD")
     bbc4.redraw(80)
     grid = Gtk.Grid()
     grid.attach(child=bbc4, left=0, top=0, width=1, height=1)
