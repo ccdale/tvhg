@@ -19,13 +19,14 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf
+from tvhg import verstr
 
 class MainWindow(Gtk.Window):
     def __init__(self):
         super().__init__(title="unset")
 
     def setTitle(self, title):
-        self.set_title(title)
+        self.set_title(title + " v" + verstr)
 
 
 def main():

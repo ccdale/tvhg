@@ -1,2 +1,5 @@
 venv/
 *swp
+dist/
+tvheadend_gui.egg-info/
+tvhg/__pycache__/
