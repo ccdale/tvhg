@@ -1,4 +1,4 @@
-# Copyright (c) 2018, Chris Allison
+# Copyright (c) 2019, Chris Allison
 #
 #     This file is part of tvhg.
 #
@@ -14,6 +14,7 @@
 #
 #     You should have received a copy of the GNU General Public License
 #     along with tvhg.  If not, see <http://www.gnu.org/licenses/>.
+
 from setuptools import setup
 from setuptools import find_packages
 from tvhg import verstr as v
