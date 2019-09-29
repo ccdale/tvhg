@@ -16,6 +16,7 @@
 #     You should have received a copy of the GNU General Public License
 #     along with tvhg.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf
@@ -64,8 +65,11 @@ class ChannelImage(Gtk.Image):
 
 
 class ChannelButton(Gtk.Button):
-    def __init__(self, filename, height=-1, width=-1):
+    def __init__(self, channame, channum, height=-1, width=-1):
         super().__init__()
+        logopath = os.path.dirname(__file__) + "/channellogos"
+        filename = logopath + "/" + channame + ".png"
+        print(filename)
         self.img = ChannelImage(filename, height, width)
         self.img.redraw()
         self.set_image(self.img)
@@ -91,13 +95,13 @@ def main():
     tvheadend.user = config["user"]
     tvheadend.passw = config["pass"]
     tvheadend.ipaddr = str(config["tvhipaddr"]) + ":" + str(config["tvhport"])
-    sents = TVH.channels()
-    for chan in sents:
-        print(UT.padStr(str(chan["number"]), 3), chan["name"])
     win = MainWindow()
     win.connect("delete-event", Gtk.main_quit)
     win.setTitle("TV Guide")
-    bbc4 = ChannelButton("/home/chris/src/tvhg/channellogos/BBC Four HD.png")
+    sents = TVH.channels()
+    for chan in sents:
+        print(UT.padStr(str(chan["number"]), 3), chan["name"])
+    bbc4 = ChannelButton("BBC Four HD", 106)
     bbc4.set_label("BBC Four HD")
     bbc4.redraw(80)
     grid = Gtk.Grid()
