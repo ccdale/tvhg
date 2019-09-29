@@ -20,6 +20,11 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf
 from tvhg import verstr
+import tvheadend
+import tvheadend.tvh as TVH
+import tvheadend.config as CONF
+import tvheadend.utils as UT
+from tvheadend.errors import errorExit
 
 class ChannelImage(Gtk.Image):
     def __init__(self, filename, height=-1, width=-1):
@@ -82,6 +87,13 @@ class MainWindow(Gtk.Window):
 
 
 def main():
+    config = CONF.readConfig()
+    tvheadend.user = config["user"]
+    tvheadend.passw = config["pass"]
+    tvheadend.ipaddr = str(config["tvhipaddr"]) + ":" + str(config["tvhport"])
+    sents = TVH.channels()
+    for chan in sents:
+        print(UT.padStr(str(chan["number"]), 3), chan["name"])
     win = MainWindow()
     win.connect("delete-event", Gtk.main_quit)
     win.setTitle("TV Guide")
