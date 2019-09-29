@@ -103,13 +103,30 @@ def main():
     win.connect("delete-event", Gtk.main_quit)
     win.setTitle("TV Guide")
     sents = TVH.channels()
+    lsize = 80
+    ncols = 4
+    nchans = len(sents)
+    nrows = int(nchans / ncols)
+    if nchans % ncols > 0:
+        nrows += 1
+    buttons = []
     for chan in sents:
-        print(UT.padStr(str(chan["number"]), 3), chan["name"])
-    bbc4 = ChannelButton("BBC Four HD", 106)
-    bbc4.set_label("BBC Four HD")
-    bbc4.redraw(80)
+        btn = ChannelButton(chan["name"], chan["number"])
+        label = UT.padStr(str(chan["number"]), 3) + " " + chan["name"]
+        btn.set_label(label)
+        btn.redraw(lsize)
+        buttons.append(btn)
     grid = Gtk.Grid()
-    grid.attach(child=bbc4, left=0, top=0, width=1, height=1)
+    cn = 0
+    for ix in range(nrows):
+        for iy in range(ncols):
+            grid.attach(child=buttons[cn], left=iy, top=ix, width=1, height=1)
+            cn += 1
+
+    # bbc4 = ChannelButton("BBC Four HD", 106)
+    # bbc4.set_label("BBC Four HD")
+    # bbc4.redraw(80)
+    # grid.attach(child=bbc4, left=0, top=0, width=1, height=1)
     # bbc4.show()
     win.add(grid)
     win.show_all()
