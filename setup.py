@@ -18,7 +18,7 @@ from setuptools import setup
 from setuptools import find_packages
 from tvhg import verstr as v
 
-with open("README.rst", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
