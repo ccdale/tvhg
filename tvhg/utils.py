@@ -278,9 +278,8 @@ def hms(secs):
     # print("hours: {} rem {}".format(hours, rem))
     minutes, seconds = reduceTime(oneminute, rem)
     # print("minutes: {} seconds: {}".format(minutes, seconds))
-    msg = ""
     msg = displayValue(days, "day")
-    msg = addToStr(msg, displayValue(hours, "hour"))
+    msg = addToStr(msg, displayValue(hours, "hr"))
     msg = addToStr(msg, displayValue(minutes, "min"))
     msg = addToStr(msg, displayValue(seconds, "sec"))
     # print("hms output: {}".format(msg))
