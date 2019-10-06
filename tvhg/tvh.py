@@ -22,9 +22,9 @@ import sys
 import requests
 import json
 import time
-import tvhg
 import json
 from operator import attrgetter, itemgetter
+import tvhg
 import tvhg.utils as UT
 from tvhg.errors import errorNotify
 
@@ -138,7 +138,7 @@ def channels():
         return sents
 
 
-def channelPrograms(channel="BBC Four HD"):
+def channelPrograms(uuid):
     """
     return a time sorted dict of programs for the named channel
 
@@ -171,11 +171,13 @@ def channelPrograms(channel="BBC Four HD"):
                 # if chan["name"] == channel:
         # data = {"filter": xfilter}
         data = {"limit": "999"}
+        data = {"channel": uuid, "filter": xfilter, "limit": "999"}
         j = sendToTVH("epg/events/grid", data)
         print(str(j["totalCount"]) + " programs")
-        mindur, minprog = UT.displayProgramList(j["entries"], 24, channel)
-        print("min duration: {}".format(mindur))
-        print("{}".format(minprog))
+        return j["entries"]
+        # mindur, minprog = UT.displayProgramList(j["entries"], 24, channel)
+        # print("min duration: {}".format(mindur))
+        # print("{}".format(minprog))
         # break
         # else:
             # print("chans is none")
