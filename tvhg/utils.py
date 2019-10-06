@@ -22,10 +22,11 @@ import sys
 import os
 import re
 import time
+from datetime import datetime
 import requests
 from pathlib import Path
-from tvheadend.errors import errorRaise
-import tvheadend.categories as CATS
+from tvhg.errors import errorRaise
+import tvhg.categories as CATS
 
 
 class FileDoesNotExist(Exception):
@@ -348,3 +349,18 @@ def channelLogo(channel, url):
                 print("Logo retrieved ok")
                 with open(imgpath, 'wb') as ifn:
                     ifn.write(r.content)
+
+def makeTimeStrings(tm):
+    dt = datetime.fromtimestamp(tm)
+    splat = dt.strftime("%-d %a %b %H:%M")
+    bits = splat.split(" ")
+    dayint = int(bits[0])
+    if 4 <= dayint <= 20 or 24 <= dayint <= 30:
+        suffix = "th"
+    else:
+        suffix = ["st", "nd", "rd"][dayint % 10 - 1]
+    day = str(dayint) + suffix
+    dayname = bits[1]
+    month = bits[2]
+    xtime = bits[3]
+    return (day, dayname, month, xtime)
