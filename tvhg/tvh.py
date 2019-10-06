@@ -16,17 +16,17 @@
 #     You should have received a copy of the GNU General Public License
 #     along with tvh.  If not, see <http://www.gnu.org/licenses/>.
 """
-tvheadend module for tvh application
+tvh module for tvhg application
 """
 import sys
 import requests
 import json
 import time
-import tvheadend
+import tvhg
 import json
 from operator import attrgetter, itemgetter
-import tvheadend.utils as UT
-from tvheadend.errors import errorNotify
+import tvhg.utils as UT
+from tvhg.errors import errorNotify
 
 class TVHError(Exception):
     pass
@@ -38,8 +38,8 @@ def sendToTVH(route,  data=None):
     """
     try:
         # auth = (xuser, xpass)
-        auth = (tvheadend.user, tvheadend.passw)
-        url = "http://" + tvheadend.ipaddr + "/api/" + route
+        auth = (tvhg.user, tvhg.passw)
+        url = "http://" + tvhg.ipaddr + "/api/" + route
         r = requests.post(url, data=data, auth=auth)
         # r = requests.get(url, auth=auth)
         if r.status_code is not 200:
@@ -90,6 +90,40 @@ def deleteRecording(uuid):
 def channels():
     """
     return a sorted list of enabled channels
+
+    each channel looks like:
+    {
+        'uuid': '7850356b3dfa39eeb499762503854ffc',
+        'enabled': True,
+        'autoname': False,
+        'name': 'Quest HD',
+        'number': 114,
+        'icon': 'https://s3.amazonaws.com/schedulesdirect/assets/stationLogos/s105894_ll_h3_aa.png',
+        'icon_public_url': 'https://s3.amazonaws.com/schedulesdirect/assets/stationLogos/s105894_ll_h3_aa.png',
+        'epgauto': True,
+        'epggrab': ['77574f7496c8cc15fa46f2f58a493596'],
+        'dvr_pre_time': 0,
+        'dvr_pst_time': 0,
+        'epg_running': 1,
+        'services': ['ad21baedd3d343584cd82e4676475891'],
+        'tags': ['1b60450bd20f38fb360da33bcff1e558', '4623848c6069fe05581f726488f9dbde'],
+        'bouquet': ''
+    },
+    {
+        'uuid': 'd33cebc511185ed33f86fe3301c4074b',
+        'enabled': True,
+        'autoname': False,
+        'name': 'BBC RB 1',
+        'number': 601,
+        'epgauto': True,
+        'epggrab': [],
+        'dvr_pre_time': 0,
+        'dvr_pst_time': 0,
+        'epg_running': 1,
+        'services': ['39bfa36f9c217ba13f2cfce96ed8b3f9'], 'tags': ['d2ba279c081822c50e925f345343815e',
+        '1b60450bd20f38fb360da33bcff1e558'],
+        'bouquet': ''
+    }
     """
     try:
         sents = None
