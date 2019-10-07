@@ -159,13 +159,19 @@ def channelPrograms(uuid):
       'summary': 'Sign off.', # optional
       'nextEventId': 5050808,
     }
+
+    will have tuples of strings for time added
+    prog["starts"] = (21st, Fri, Jan, 13:24)
+    prog["stops"] = (21st, Fri, Jan, 15:00)
+    prog["durs"] = "1 hr 36 mins"
     """
     try:
         # chans = channels()
         now = int(time.time())
+        then = now + (3600 * 24)
         # xfilter = [ { "field": "name", "type": "string", "value": channel, "comparison": "eq", } ]
         xfilter = [{"field": "stop", "type": "numeric", "value": str(now), "comparison": "gt"},
-                {"field": "start", "type": "numeric", "value": str(now + (3600 * 24)), "comparison": "lt"}]
+                {"field": "start", "type": "numeric", "value": str(then), "comparison": "lt"}]
         # if chans is not None:
             # for chan in chans:
                 # if chan["name"] == channel:
@@ -174,13 +180,15 @@ def channelPrograms(uuid):
         data = {"channel": uuid, "filter": xfilter, "limit": "999"}
         j = sendToTVH("epg/events/grid", data)
         print(str(j["totalCount"]) + " programs")
-        return j["entries"]
-        # mindur, minprog = UT.displayProgramList(j["entries"], 24, channel)
-        # print("min duration: {}".format(mindur))
-        # print("{}".format(minprog))
-        # break
-        # else:
-            # print("chans is none")
+        progs = []
+        for prog in j["entries"]:
+            if int(prog["stop"]) > now and int(prog["start"]) < then:
+                prog["starts"] = UT.makeTimeStrings(prog["start"])
+                prog["stops"] = UT.makeTimeStrings(prog["stop"])
+                prog["durs"] = UT.hms(int(prog["stop"]) - int(prog["start"]))
+                progs.append(prog)
+        print("filtered progs {}".format(len(progs)))
+        return progs
     except Exception as e:
         fname = sys._getframe().f_code.co_name
         errorNotify(fname, e)

@@ -122,11 +122,29 @@ class ChannelPrograms(Gtk.Box):
         self.channel = channame
         self.uuid = uuid
 
+    def channelData(self):
+        progs = TVH.channelPrograms(self.uuid)
+        store = Gtk.ListStore(str, str, str, str)
+        curday = progs[0]["starts"][1]
+        treeiter = store.append([curday, "", "", ""])
+        for prog in progs:
+            if prog["starts"][1] != curday:
+                curday = prog["starts"][1]
+                treeiter = store.append([curday, "", "", ""])
+            treeiter = store.append([prog["starts"][3] + " - " + prog["stops"][3], prog["durs"], prog["title"], prog["description"]])
+        tree = Gtk.TreeView(model=store)
+        for i, coltitle in enumerate(["Time", "Dur", "Title", "Description"]):
+            rend = Gtk.CellRendererText()
+            col = Gtk.TreeViewColumn(coltitle, rend, text=i)
+            tree.append_column(col)
+        self.add(tree)
+
+
     def makePage(self):
         btn = Gtk.Button(label="All Channels")
         btn.connect("clicked", self.win.programButtonClicked)
         self.add(btn)
-        # self.pack_start(btn, True, False, 0)
+        self.channelData()
 
 
 class MainWindow(Gtk.Window):
