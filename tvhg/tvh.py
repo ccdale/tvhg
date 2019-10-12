@@ -182,7 +182,7 @@ def channelPrograms(uuid):
         print(str(j["totalCount"]) + " programs")
         progs = []
         for prog in j["entries"]:
-            if int(prog["stop"]) > now and int(prog["start"]) < then:
+            if int(prog["stop"]) > now and int(prog["start"]) < then and uuid == prog["channelUuid"]:
                 prog["starts"] = UT.makeTimeStrings(prog["start"])
                 prog["stops"] = UT.makeTimeStrings(prog["stop"])
                 prog["durs"] = UT.hms(int(prog["stop"]) - int(prog["start"]))
@@ -204,8 +204,31 @@ def timeSlotPrograms(start=0, length=2):
         data = {"filter": xfilter}
         data = {"limit": "999"}
         j = sendToTVH("epg/events/grid", data)
-        if "entries" in j:
-            mindur, minprog = UT.displayProgramList(j["entries"], length)
+        print(str(j["totalCount"]) + " programs")
+        progs = []
+        minp = 9999999
+        maxp = 0
+        cn = 0
+        for prog in j["entries"]:
+            if int(prog["stop"]) > now and int(prog["start"]) < then:
+                cn += 1
+                prog["duration"] = int(prog["stop"]) - int(prog["start"])
+                if prog["duration"] < minp:
+                    minp = prog["duration"]
+                if prog["duration"] > maxp:
+                    maxp = prog["duration"]
+                prog["starts"] = UT.makeTimeStrings(prog["start"])
+                prog["stops"] = UT.makeTimeStrings(prog["stop"])
+                prog["durs"] = UT.hms(dur)
+                if prog["channelUuid"] not in progs:
+                    progs[prog["channelUuid"]] = []
+                progs[prog["channelUuid"]].append(prog)
+        progs["minp"] = minp
+        progs["maxp"] = maxp
+        print("filtered progs {}".format(cn))
+        return progs
+        # if "entries" in j:
+        #     mindur, minprog = UT.displayProgramList(j["entries"], length)
     except Exception as e:
         fname = sys._getframe().f_code.co_name
         errorNotify(fname, e)
