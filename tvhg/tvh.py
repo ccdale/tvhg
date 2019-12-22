@@ -22,17 +22,17 @@ import sys
 import requests
 import json
 import time
-import json
 from operator import attrgetter, itemgetter
 import tvhg
 import tvhg.utils as UT
 from tvhg.errors import errorNotify
 
+
 class TVHError(Exception):
     pass
 
 
-def sendToTVH(route,  data=None):
+def sendToTVH(route, data=None):
     """
     send a request to tvheadend
     """
@@ -77,6 +77,7 @@ def finishedRecordings():
         errorNotify(fname, e)
     finally:
         return (total, entries)
+
 
 def deleteRecording(uuid):
     try:
@@ -170,11 +171,18 @@ def channelPrograms(uuid):
         now = int(time.time())
         then = now + (3600 * 24)
         # xfilter = [ { "field": "name", "type": "string", "value": channel, "comparison": "eq", } ]
-        xfilter = [{"field": "stop", "type": "numeric", "value": str(now), "comparison": "gt"},
-                {"field": "start", "type": "numeric", "value": str(then), "comparison": "lt"}]
+        xfilter = [
+            {"field": "stop", "type": "numeric", "value": str(now), "comparison": "gt"},
+            {
+                "field": "start",
+                "type": "numeric",
+                "value": str(then),
+                "comparison": "lt",
+            },
+        ]
         # if chans is not None:
-            # for chan in chans:
-                # if chan["name"] == channel:
+        # for chan in chans:
+        # if chan["name"] == channel:
         # data = {"filter": xfilter}
         data = {"limit": "999"}
         data = {"channel": uuid, "filter": xfilter, "limit": "999"}
@@ -182,7 +190,11 @@ def channelPrograms(uuid):
         print(str(j["totalCount"]) + " programs")
         progs = []
         for prog in j["entries"]:
-            if int(prog["stop"]) > now and int(prog["start"]) < then and uuid == prog["channelUuid"]:
+            if (
+                int(prog["stop"]) > now
+                and int(prog["start"]) < then
+                and uuid == prog["channelUuid"]
+            ):
                 prog["starts"] = UT.makeTimeStrings(prog["start"])
                 prog["stops"] = UT.makeTimeStrings(prog["stop"])
                 prog["durs"] = UT.hms(int(prog["stop"]) - int(prog["start"]))
@@ -199,8 +211,15 @@ def timeSlotPrograms(start=0, length=2):
         now = int(time.time())
         if start == 0:
             start = int(time.time())
-        xfilter = [{"field": "stop", "type": "numeric", "value": str(now), "comparison": "gt"},
-                {"field": "start", "type": "numeric", "value": str(now + (3600 * length)), "comparison": "lt"}]
+        xfilter = [
+            {"field": "stop", "type": "numeric", "value": str(now), "comparison": "gt"},
+            {
+                "field": "start",
+                "type": "numeric",
+                "value": str(now + (3600 * length)),
+                "comparison": "lt",
+            },
+        ]
         data = {"filter": xfilter}
         data = {"limit": "999"}
         j = sendToTVH("epg/events/grid", data)
